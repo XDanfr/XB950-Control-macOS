@@ -6,16 +6,26 @@ on:
 
 jobs:
   build:
-    runs-on: macos-26
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
-      - name: Build and test
+
+      - name: Test (Apple Silicon)
         run: >-
           xcodebuild test
           -project XB950Control.xcodeproj
           -scheme XB950Control
-          -destination 'platform=macOS'
+          -destination 'platform=macOS,arch=arm64'
           CODE_SIGNING_ALLOWED=NO
+
+      - name: Test (Intel)
+        run: >-
+          xcodebuild test
+          -project XB950Control.xcodeproj
+          -scheme XB950Control
+          -destination 'platform=macOS,arch=x86_64'
+          CODE_SIGNING_ALLOWED=NO
+
       - name: Verify universal Release build
         run: >-
           xcodebuild build
